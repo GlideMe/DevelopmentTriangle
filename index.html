@@ -1,0 +1,102 @@
+<!doctype HTML>
+<title>Development Triange</title>
+<style>
+.container {
+  margin: 0 auto;
+  text-align: center;
+  width: 800px;
+}
+#triangle {
+  margin: 100px auto;
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 0 100px 167.803399px 100px;
+  border-color: transparent transparent #007bff transparent;
+ 
+}
+#triangle div {
+  font-size: 25px;
+}
+.time {
+  transform: translate(-27px,-26px);
+  -webkit-transform: translate(-27px,-26px);
+}
+.stability {
+  transform: translate(134px,94px) rotate(121deg);
+  -webkit-transform: translate(134px,94px) rotate(121deg);
+}
+.features {
+  transform: translate(-88px,133px) rotate(-121deg);
+  -webkit-transform: translate(-88px,133px) rotate(-121deg);
+}
+
+#slider {
+  width: 300px;
+}
+</style>
+<div class=container>
+<div id=triangle>
+  <div class=time>Time</div>
+  <div class=stability>Stability</div>
+  <div class=features>Features</div>
+</div>
+<input id='slider' type=range min=0 max=359 value=0 />
+<script>
+(function () {
+  // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+  // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+
+  // requestAnimationFrame polyfill by Erik M?ller. fixes from Paul Irish and Tino Zijdel
+
+  // MIT license
+
+  (function() {
+      var lastTime = 0;
+      var vendors = ['ms', 'moz', 'webkit', 'o'];
+      for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+          window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+          window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+                                     || window[vendors[x]+'CancelRequestAnimationFrame'];
+      }
+   
+      if (!window.requestAnimationFrame)
+          window.requestAnimationFrame = function(callback, element) {
+              var currTime = new Date().getTime();
+              var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+              var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+                timeToCall);
+              lastTime = currTime + timeToCall;
+              return id;
+          };
+   
+      if (!window.cancelAnimationFrame)
+          window.cancelAnimationFrame = function(id) {
+              clearTimeout(id);
+          };
+  }());
+  var slider = document.getElementById('slider');
+  var triangle = document.getElementById('triangle');
+  var currentValue;
+  function render() {
+    if (slider.value !== currentValue) {
+      currentValue = slider.value;
+      ['transform', 'webkitTransform'].forEach(function (transform) {
+        triangle.style[transform] = "rotate(" + currentValue + "deg) translate(0, -40px)";
+        
+      });
+    }
+  }
+  slider.ondrop = function () {
+    console.log(arguments);
+    location.hash = "#" + currentValue;
+  };
+  (function animloop(){
+    requestAnimationFrame(animloop);
+    render();
+  })();
+  if (location.hash) {
+    slider.value = parseInt(location.hash.substring(1), 10) % 359;
+  }
+}());
+</script>
