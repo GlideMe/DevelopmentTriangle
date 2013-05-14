@@ -83,14 +83,10 @@
       currentValue = slider.value;
       ['transform', 'webkitTransform'].forEach(function (transform) {
         triangle.style[transform] = "rotate(" + currentValue + "deg) translate(0, -40px)";
-        
       });
+      location.hash = "#" + currentValue;
     }
   }
-  slider.ondrop = function () {
-    console.log(arguments);
-    location.hash = "#" + currentValue;
-  };
   (function animloop(){
     requestAnimationFrame(animloop);
     render();
